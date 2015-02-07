@@ -1,0 +1,90 @@
+<%- include layouts/header.ejs %>
+<script>
+	function edit_customer(id) {
+		customeraction.action = '/customers/edit/' + id;
+		customeraction.method = "GET";
+		customeraction.submit();
+	}
+	function delete_customers() {
+		customeraction.actions.value = "delete";
+		customeraction.submit();
+	}
+</script>
+	<form name = "customeraction" method = "POST">
+		<input type = "hidden" name = "actions" value = "" />
+	<div class = "page-header">
+		<h1>Customers Listing: </h1>
+	</div>
+	<%
+		if (status) {
+			%>
+			<div class = "alert alert-success" role = "alert">
+			<%
+			switch (status) {
+				case "created": 
+					%>Successfully created a customer.
+					<%
+					break;
+				case "updated":
+					%>Successfully updated a customer.
+					<%
+					break;
+				case "deleted":
+					%>Successfully deleted a customer.
+					<%
+					break;
+			}
+			%>			
+			</div>
+			<%
+		}
+		if (data.length) {
+			%>
+			<div class  = "row">
+				<div class = "col-md-12">
+					<table class = "table">
+						<thead>
+							<tr>
+								<th></th>
+								<th>#</th>
+								<th>Name</th>
+								<th>Address</th>
+								<th>Phone</th>
+								<th>E-mail</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+					<%
+					for(var i = 0;i < data.length;i++) {				
+						%>
+						<tr>
+							<td><input type = "checkbox" name = "checkboxid[]" value = "<%=data[i].id%>" /></td>
+							<td><%=data[i].id%></td>
+							<td><%=data[i].name%></td>
+							<td><%=data[i].address%></td>
+							<td><%=data[i].phone%></td>
+							<td><%=data[i].email%></td>
+							<td><button onClick = "edit_customer(<%=data[i].id%>);">Edit</button></td>
+						</tr>
+						<%
+					}
+					%>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<%
+		}
+	%>
+	</table>
+	<div class = "row">
+		<div class = "col-md-6">
+			<button type = "button" onClick = "delete_customers();">Delete</button>
+		</div>
+		<div class = "col-md-6" align = "right">
+			<button type = "button" onClick = "window.location='/customers/add';">Create</button>
+		</div>
+	</div>
+	</form>
+<%- include layouts/footer.ejs %>	
