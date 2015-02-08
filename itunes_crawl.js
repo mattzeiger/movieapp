@@ -56,9 +56,12 @@ function parseiTunesURL(url) {
 						connection.query('SELECT * FROM movie WHERE (title = ? OR alt_title = ?) AND year = ?;', {movie_name, movie_name, movie_year}, function (err,rows, fields) {
 
 
-						
-							//it doesn't? then create it	
+							//it does, then check to see if there is an iTunes record for it
+								//there is, then update it
+								//there isn't, then create it
 								
+							//it doesn't? then create it	
+
 							/*echo $movie_results->{$key}->{'name'}." - ";//." | ".implode(" | ", $prices)."\r\n";
 
 							foreach ($offers as $akey=>$avalue) {
