@@ -84,23 +84,22 @@ Data Model:
 	[movie]
 	id
 	title
-	alt_title
+	alt_title			[zombies aah!]
 	year				
 	mpaa				[0=NR,1=G,2=PG,3=PG-13,4=R,5=NC-17]
 	description
 	genre_primary
 	director_id
-	length				[120]
+	duration				[120]
 	studio
 	budget	
 	release_date
-	budget
 	box_office
 	
 		
 	[moviesource]
 	id
-	video_id			[123]
+	movie_id			[123]
 	source 				[amazon,itunes,hbo,netflix,crackle,hulu]
 	source_id			[B0094LB5IC]
 	free				[1/0]	--denotes if it is truly free
@@ -110,6 +109,8 @@ Data Model:
 	rental_price_hd		[2.99]
 	purchase_price_hd	[9.99]
 	cc					[1/0]
+	coming_soon			[1/0]
+	
 	
 	[moviegenres]
 	id
