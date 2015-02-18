@@ -72,7 +72,7 @@ function parseiTunesURL(url, callback) {
 					isDoneParsing();
 				} catch (e) {
 					console.log("Error thrown parsing json:" + e);
-					clearURL(url, function() {
+					clearURL(url, false, function() {
 						return callback();
 					}); 
 				}
@@ -82,13 +82,13 @@ function parseiTunesURL(url, callback) {
 						if (hasmovies) { //if this URL has movies, add the URL's from the page (this should help keep from crawling all of the non-movie pages)							
 							//dont look for URL's on the page to q up until the parsing is done....
 							findURLs(new_response, function() {
-								clearURL(url, function() {
+								clearURL(url, true, function() {
 									return callback();
 								}); 
 							});							
 						} else {
 							console.log("No Movie Results");
-							clearURL(url, function() {
+							clearURL(url, false, function() {
 								return callback();
 							}); 
 						}
@@ -96,13 +96,13 @@ function parseiTunesURL(url, callback) {
 				}		
 			} else {//if the response is not empty...
 				console.log('Empty Response');
-				clearURL(url, function() {
+				clearURL(url, false, function() {
 					return callback();
 				});    
 			}								
 		} else {				
 			console.log("HTTP ERROR" + error);
-			clearURL(url, function() {
+			clearURL(url, false, function() {
 				return callback();
 			});       	
 		}	
@@ -146,10 +146,14 @@ function findURLs(raw_response, callback) {
 	}
 	addURL(matches.shift());
 }
-function clearURL(url, callback) {
+function clearURL(url, ihazmovies, callback) {
 	//delete this URL from the queue
+	var hasmovies = 0;
+	if (ihazmovies === true) {
+		hasmovies = 1;
+	}
 	var now = new Date();
-	connection.query("UPDATE itunes_urlq SET dateparsed = ? WHERE url = ? ", [now.format("YYYY-MM-DD hh:mm"), url], function(err,rows) {				
+	connection.query("UPDATE itunes_urlq SET dateparsed = ?, hasmovies = ? WHERE url = ? ", [now.format("YYYY-MM-DD hh:mm"), hasmovies, url], function(err,rows) {				
 		if (err) throw err;
 		//console.log('Successfully deleted url');
 		return callback();
@@ -263,6 +267,8 @@ function parseMovie(movieResults, callback) {
 					}
 				} else {
 					//console.log('Create the movie');
+
+					//[0=NR,1=G,2=PG,3=PG-13,4=R,5=NC-17]
 					var contentRating = 0;
 					if (movieResults['contentRating'].name == 'G') {
 						contentRating = 1;
@@ -276,15 +282,15 @@ function parseMovie(movieResults, callback) {
 						contentRating = 5;
 					}
 
-					var moviedata = {
+					var moviedata = { //meta-data retrieval happens elsewhere
 						title : movie_name,
 						alt_title : alt_title,
 						year : movie_year,
-						mpaa : contentRating,				//[0=NR,1=G,2=PG,3=PG-13,4=R,5=NC-17]
+						mpaa : contentRating,				
 						description : '',
 						genre_primary : '',
 						director_id : 0,
-						duration : '',			//	[120]
+						duration : '',
 						studio : '',
 						budget : '',
 						release_date : movieResults['releaseDate'],
@@ -453,7 +459,7 @@ function strip3D(somestr) {
 connection.connect();	
 
 var now = new Date();
-connection.query("SELECT url FROM itunes_urlq WHERE (dateparsed < ? OR dateparsed IS NULL) ORDER by rand() ", now.format("YYYY-MM-DD"), function(err, rows, fields) {
+connection.query("SELECT url FROM itunes_urlq WHERE (dateparsed < ? OR dateparsed IS NULL) AND hasmovies = 1 ORDER by rand() ", now.format("YYYY-MM-DD"), function(err, rows, fields) {
     if (err) {
     	console.log("Query error: " + err);
     	//throw err;

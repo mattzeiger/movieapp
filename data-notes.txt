@@ -1,22 +1,3 @@
-Closer Competition: 
-	http://www.themoviedb.org/apps
-	Can I Stream It
-	Instant Watcher
-	Flixster
-	FeedFliks
-	NextGuide
-	Yidio
-	Fanhattan
-	Instant Watch Browser for Netflix
-
-Distant Competition:
-	Fan TV	(Device only for TWC)
-
-Ideas:
-	//movie award nominations....
-	//http://trakt.tv/ integration
-
-//get C++ talking to MySQL
 ---------------------------------------------------------------------------------------------------------
 //Find URL's to crawl/ scrape
 //New Content discovery!!
@@ -33,9 +14,10 @@ Ideas:
 				//if not, then insert a record, parsing what we can from the source, and flag for metadata-retrieval
 	
 //go through items flagged for metadata-retrieval
-	//use wikipedia to grab meta data:
+	//use amazon product API, itunes API, and/or wikipedia to grab meta data:
 		http://www.mediawiki.org/wiki/API:Main_page
 		http://en.wikipedia.org/w/api.php?format=json&action=query&titles=The%20Choice%20(film)&prop=revisions&rvprop=content&continue=
+
 	//use themoviedb.org to grab meta data:
 		http://www.themoviedb.org/faq/api
 		
@@ -44,25 +26,13 @@ Ideas:
 
 ---------------------------------------------------------------------------------------------------------
 Amazon:
-	//need to crawl service, not just search/api a given title...
+	//need to crawl service, not just search/api a given title... (really prefer to find what connected devices use...)
 	
 	http://www.amazon.com/Prime-Instant-Video/b/?node=2676882011
 
 		view-source:http://www.amazon.com/gp/product/B0094LB5IC
 
-		"isPrime":true
-		
----------------------------------------------------------------------------------------------------------
-iTunes:	
-	//find way to crawl service, not just search the api....
-	
-//	
-http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsSearch?term=fury&media=movie&limit=1
-	--Note that this limits it to 1
-	--If you don't limit it, you'll receive results that may or may not be helpful (for example, "Annie" might show both movies across both years)
-		--you'll have to do year-matching yourself
-	--https://www.apple.com/itunes/affiliates/resources/documentation/itunes-store-web-service-search-api.html
-
+		"isPrime":true		
 ---------------------------------------------------------------------------------------------------------
 Netflix:
 	//find way to crawl service
@@ -74,10 +44,23 @@ Crackle:
 Hulu:
 	//find way to crawl service
 
-
 	http://www.hulu.com/sitemap
 	
 	http://mozart.hulu.com/v1.h2o/recommended/upnext?dp_identifier=hulu&exclude_same_game=0&exclude_same_movie=0&mode=default&show_id=8749&video_id=676792&video_type=feature_film&_language=en&_region=us&items_per_page=32&position=0&_user_pgid=1&_content_pgid=5059&_device_id=1&region=us&locale=en&language=en
+---------------------------------------------------------------------------------------------------------
+HBO GO:
+	//Movies: http://catalog.lv3.hbogo.com/apps/mediacatalog/rest/productBrowseService/category/INDB487
+
+---------------------------------------------------------------------------------------------------------
+iTunes - DONE!!!!
+	//find way to crawl service, not just search the api....
+	
+//	
+http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsSearch?term=fury&media=movie&limit=1
+	--Note that this limits it to 1
+	--If you don't limit it, you'll receive results that may or may not be helpful (for example, "Annie" might show both movies across both years)
+		--you'll have to do year-matching yourself
+	--https://www.apple.com/itunes/affiliates/resources/documentation/itunes-store-web-service-search-api.html
 	
 ---------------------------------------------------------------------------------------------------------
 Data Model:
@@ -136,5 +119,22 @@ Data Model:
 	[talent]
 	id
 	name
-	
-	
+---------------------------------------------------------------------------------------------------------	
+Closer Competition: 
+	JustWatch
+	Can I Stream It
+	http://www.themoviedb.org/apps	
+	Instant Watcher
+	Flixster
+	FeedFliks
+	NextGuide
+	Yidio
+	Fanhattan
+	Instant Watch Browser for Netflix
+
+Distant Competition:
+	Fan TV	(Device only for TWC)
+
+Ideas:
+	//movie award nominations....
+	//http://trakt.tv/ integration
