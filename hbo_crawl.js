@@ -10,22 +10,22 @@ var db = require('dbConnection');
 var connection = db();
 var moviedata = require('moviedata');
 
+connection.connect();
 
+var INITIAL_URL = 'http://catalog.lv3.hbogo.com/apps/mediacatalog/rest/productBrowseService/category/INDB487'; 
 
-//var INITIAL_URL = 'http://localhost:8080/response.html'; //https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewGrouping?cc=us&id=39'; //Movies Page on iTunes
-var INITIAL_URL = 'https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewGrouping?cc=us&id=39'; 
-//var INITIAL_URL = 'https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewMultiRoom?cc=us&fcId=678343783';
-
-function parseiTunesURL(url, callback) {
+function parseHBOURL(url, callback) {
 	var options = {
-		url : url, //url we are loading
-		headers : {
-			'X-Apple-Store-Front' : '143441-1,28' //required so that iTunes accepts the request
-		}
+		url : url //url we are loading		
 	};
 	request(options, function(error, response, body) {	
 		console.log('Parsing ' + url);		
-		if (!error && response.statusCode == 200) {				
+		if (!error && response.statusCode == 200) {		
+
+			//parse XML
+			//body->productResponses->featureResponses->featureResponse (each movie)
+
+
 			var holdar = body.split('its.serverData=');
 			var new_response = '';
 			if (holdar.length > 1) {
@@ -107,56 +107,6 @@ function parseiTunesURL(url, callback) {
 	});	
 }
 
-function findURLs(raw_response, callback) {
-	//look for other Pages (i.e. URL's with MZStore.woa	
-	var matches = raw_response.match(/https:\/\/itunes.apple.com\/WebObjects\/MZStore.woa\/(.+?)"/gi);	
-												
-	function addURL(url) {
-		if (matches.length > 0) {
-			if (typeof url != 'undefined') {
-				url = url.substr(0, url.length - 1); //strip double quote on the end
-
-				connection.query("SELECT count(*) as thecount from itunes_urlq WHERE url = ? ", url, function(err,rows) {
-					if (rows[0].thecount == 0) {
-						var now = new Date();
-						var data = {
-							url: url,
-							dateadded : now.format("YYYY-MM-DD hh:mm")
-						};
-						//add it to url_queue table	
-						connection.query("INSERT INTO itunes_urlq set ? ", data, function(err,rows) {									
-							if (err) throw err;
-							//console.log("Successfully inserted into itunes_urlq record with id of " + rows.insertId);
-							return addURL(matches.shift());
-						});
-						//console.log('Inserting url' + data.url);
-					} else {
-						return addURL(matches.shift());
-					}
-				});
-			} else {
-				return addURL(matches.shift());
-			}
-		} else {
-			//all done adding URL's here...
-			return callback();
-		}
-	}
-	addURL(matches.shift());
-}
-function clearURL(url, ihazmovies, callback) {
-	//delete this URL from the queue
-	var hasmovies = 0;
-	if (ihazmovies === true) {
-		hasmovies = 1;
-	}
-	var now = new Date();
-	connection.query("UPDATE itunes_urlq SET dateparsed = ?, hasmovies = ? WHERE url = ? ", [now.format("YYYY-MM-DD hh:mm"), hasmovies, url], function(err,rows) {				
-		if (err) throw err;
-		//console.log('Successfully deleted url');
-		return callback();
-	});	
-}
 function parseMovie(movieResults, callback) {
 	var prices = new Array();
 	var offers = movieResults['offers'];
@@ -204,7 +154,7 @@ function parseMovie(movieResults, callback) {
 	}
 
 	var movieobj = {
-		source : 'itunes',
+		source : 'hbo',
 		source_id : movieResults['id'], 
 		movie_name : movie_name,
 		alt_title : alt_title,
@@ -222,38 +172,5 @@ function parseMovie(movieResults, callback) {
 	moviedata.captureMovie(movieobj, callback); //~~~ Action: Update Movies Table & MovieSource Tables	
 }
 
-connection.connect();	
+	
 
-var now = new Date();
-connection.query("SELECT url FROM itunes_urlq WHERE (dateparsed < ? OR dateparsed IS NULL) AND hasmovies = 1 ORDER by rand()", now.format("YYYY-MM-DD"), function(err, rows, fields) {
-    if (err) {
-    	console.log("Query error: " + err);
-    	//throw err;
-    	return;
-    }    
-
- 	var url_queue = new Array(); // 
- 	if (rows.length > 0) { 	
-    	for (var i in rows) {
-    		url_queue.push(rows[i].url);	        
-	    }
-	} else {
-		//if empty, start with INITIAL_URL
-		url_queue.push(INITIAL_URL);		
-	}	
-	function loadNext(url) {
-		if (url) {
-			parseiTunesURL(url, function() {
-				return loadNext( url_queue.shift() ) ;
-			});
-		} else {
-			return complete();
-		}
-	}
-	loadNext(url_queue.shift());	
-});
-		
-function complete() {
-	connection.end(); //close the mysql connection
-	console.log('Done looping through URLs');
-}

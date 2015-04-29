@@ -1,4 +1,4 @@
-
+var moviedata = require('moviedata');
 
 function detectEdition(movietitle) {
 	movietitle = strip3D(stripYears(movietitle.trim()));
@@ -58,7 +58,12 @@ function strip3D(somestr) {
 }
 
 
+
 var movie_name = 'The Italian (L\'Italien) [The Italian]';
+
+var movie_name = moviedata.normalizeMovieTitle(movie_name);
+
+/*
 //var movie_name = 'Quai des Orfèvres (Jenny Lamour) [Subtitled]';
 //Robin Hood (Unrated Director's Cut) [2010] [Unrated Director's Cut]
 //Robin Hood (Unrated Director's Cut) [2010] [Unrated Director's Cut]
@@ -73,7 +78,7 @@ movie_name = normalizeMovieTitle(movie_name);
 if (alt_title == movie_name) {
 	alt_title = '';
 }
-
+*/
 console.log(movie_name);
-console.log(alt_title);
-console.log(isEdition);
+//console.log(alt_title);
+//console.log(isEdition);

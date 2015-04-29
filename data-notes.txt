@@ -26,22 +26,27 @@
 
 ---------------------------------------------------------------------------------------------------------
 Amazon:
+	<- check the iPhone Video App <- Source the API?
+
 	//need to crawl service, not just search/api a given title... (really prefer to find what connected devices use...)
-	
+
 	http://www.amazon.com/Prime-Instant-Video/b/?node=2676882011
 
 		view-source:http://www.amazon.com/gp/product/B0094LB5IC
 
 		"isPrime":true		
 ---------------------------------------------------------------------------------------------------------
-Netflix:
+Netflix: (Mobile App)
 	//find way to crawl service
+		-- 1) Scrape the website
+			2) Tap the mobile API (<- Preferable, as it won't change as often, or be prone to errors...)
+
 
 ---------------------------------------------------------------------------------------------------------
-Crackle:
+Crackle: (Mobile App)
 	//find way to crawl service
 ---------------------------------------------------------------------------------------------------------
-Hulu:
+Hulu: (Mobile App)
 	//find way to crawl service
 
 	http://www.hulu.com/sitemap
@@ -120,7 +125,18 @@ Data Model:
 	id
 	name
 ---------------------------------------------------------------------------------------------------------	
+Node Plan:
+	
+	Currently parsing each streaming service is its own application. (crashes separate...)
+
+	Find-MetaData
+
+	
+
+---------------------------------------------------------------------------------------------------------	
 Closer Competition: 
+	moreflicks.com
+	flixfindr.com
 	JustWatch
 	Can I Stream It
 	http://www.themoviedb.org/apps	
@@ -138,3 +154,6 @@ Distant Competition:
 Ideas:
 	//movie award nominations....
 	//http://trakt.tv/ integration
+---------------------------------------------------------------------------------------------------------	
+Marketing:
+	https://medium.com/@stuartkhall/how-i-got-2-3m-app-downloads-without-spending-a-cent-on-marketing-f4823b6bc779
