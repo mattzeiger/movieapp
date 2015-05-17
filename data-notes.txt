@@ -125,15 +125,6 @@ Data Model:
 	id
 	name
 ---------------------------------------------------------------------------------------------------------	
-Node Plan:
-	
-	Currently parsing each streaming service is its own application. (crashes separate...)
-
-	Find-MetaData
-
-	
-
----------------------------------------------------------------------------------------------------------	
 Closer Competition: 
 	moreflicks.com
 	flixfindr.com
